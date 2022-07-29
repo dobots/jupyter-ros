@@ -1,34 +1,52 @@
 import ipycanvas
 import ipywidgets
-import rospkg
 import random
 import time
 import math
 import os
 from ament_index_python.packages import get_package_share_directory
 
+
 class TurtleSim:
-    def __init__(self, width=1600, height=1600, turtle_size=100, background_color="#4556FF"):
+    def __init__(self, width=None, height=None, turtle_size=None, background_color="#4556FF"):
+        
+        if(width == None):
+            self.width = 1600
+        else:
+            self.width = width
+            
+        if(height == None):
+            self.height = 1600
+        else:
+            self.height = height
+        
+        if(turtle_size == None):
+            self.turtle_size = 100
+        else:
+            self.turtle_size = turtle_size
+            
+        
         self.turtles = {}
-        self.turtle_size = turtle_size
-        self.canvas_middle = {"x": width // 2,
-                              "y": height // 2,
+        
+        self.canvas_middle = {"x": self.width // 2,
+                              "y": self.height // 2,
                               "theta": 0}
 
         # Three layers for the canvas: 0-background, 1-paths, 2-turtles
         self.canvas = ipycanvas.MultiCanvas(3,
-                                            width=width, height=height,
+                                            width=self.width, height=self.height,
                                             layout={"width": "100%"})
 
         # Water background
         self.canvas[0].fill_style = background_color
-        self.canvas[0].fill_rect(0, 0, width, height)
+        self.canvas[0].fill_rect(0, 0, self.width, self.height)
 
         # Turtle path width
         self.canvas[1].line_width = 8
 
         self.last_move_time = time.time()
         self.spawn()
+
 
     def spawn(self, name=None, pose=None):
 
@@ -47,6 +65,9 @@ class TurtleSim:
             self.draw_turtle(name)
 
         print(name + " has spawned.")
+        
+        
+        
 
     def move_turtles(self, new_poses):
         elapsed_time = time.time() - self.last_move_time

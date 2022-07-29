@@ -1,7 +1,12 @@
 """
 Subscription class for jupyter-ros2 Project
 
-Author: zmk5 (Zahi Kakish)
+Modified by: ldani (Luigi Dania)
+Date: 22-July-2022
+
+
+Original Author: zmk5 (Zahi Kakish)
+
 
 """
 from typing import TypeVar
@@ -80,7 +85,7 @@ class Subscription():
 
         else:
             self.__subscription = node.create_subscription(
-                msg_type, topic, self.__data_msg(callback), 10)
+                msg_type, topic, callback, 10)
 
     def display(self) -> widgets.VBox:
         """ Display's widgets in the Jupyter Cell for a ros2 Subscription """
@@ -99,7 +104,7 @@ class Subscription():
 
     def __thread_target(self) -> None:
         while self.__thread_state:
-            rclpy.spin_once(self.node, timeout_sec=0.1)
+            rclpy.spin_once(self.node, timeout_sec=1)
         self.__widgets["out"].append_stdout("Done!\n")
 
     def _stop_subscription(self, _) -> None:
@@ -159,7 +164,7 @@ def subscribe(topic, msg_type, callback):
         subscriber_registry[topic].unregister()
 
     out = widgets.Output(layout={'border': '1px solid gray'})
-    subscriber_registry[topic] = rospy.Subscriber(topic, msg_type, callback)
+    subscriber_registry[topic] = rcply.Subscriber(topic, msg_type, callback)
     output_registry[topic] = out
 
     btn = widgets.Button(description='Stop')
@@ -171,7 +176,7 @@ def subscribe(topic, msg_type, callback):
             btn.description = 'Start'
         else:
             output_registry[topic] = out
-            subscriber_registry[topic] = rospy.Subscriber(topic, msg_type, callback)
+            subscriber_registry[topic] = rclpy.Subscriber(topic, msg_type, callback)
             btn.description = 'Stop'
 
     btn.on_click(stop_start_subscriber)
