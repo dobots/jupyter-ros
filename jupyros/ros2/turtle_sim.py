@@ -52,7 +52,9 @@ class TurtleSim:
 
     def move_turtles(self, new_poses):
         elapsed_time = time.time() - self.last_move_time
-
+        
+        
+        
         if elapsed_time > 0.08:  # seconds
             self.last_move_time = time.time()
 
